@@ -21,7 +21,24 @@ export function useWorkspace() {
       }
     }, 60);
   }
-  watch(() => doc.settings.background, invalidate);
+  // 预览背景变化时，默认让合成底色跟随，保持字符画与预览一致
+  watch(
+    () => doc.settings.background,
+    (bg) => {
+      if (doc.interpretation) doc.interpretation.matte = bg;
+      invalidate();
+    },
+  );
+  // 解释参数（模式 / 取舍 / 底色）变化时，字符结果、比较、亮度分布、PNG 一起更新
+  watch(
+    () => [
+      doc.interpretation?.mode,
+      doc.interpretation?.intent,
+      doc.interpretation?.matte,
+      doc.interpretation?.unknownConfirmed,
+    ],
+    invalidate,
+  );
   provide(studioKey, { doc, busy, notice, invalidate });
   return { doc, busy, notice };
 }

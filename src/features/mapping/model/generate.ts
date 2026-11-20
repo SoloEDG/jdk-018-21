@@ -4,19 +4,21 @@ import { gridSize } from "../lib/gridSize";
 import { sample } from "../lib/sample";
 import { tone, luminance } from "../lib/tone";
 export function generate(doc: StudioDocument): Grid | null {
-  if (!doc.asset) return null;
+  if (!doc.asset || !doc.interpreted || !doc.interpretation) return null;
   const s = doc.settings;
   const size = gridSize(
     doc.asset.width * doc.crop.width,
     doc.asset.height * doc.crop.height,
     s.columns,
   );
-  const pixels = sample(
-    doc.asset,
+  const { data: pixels, histogram } = sample(
+    doc.interpreted,
+    doc.interpretation,
     doc.crop,
+    doc.asset.width,
+    doc.asset.height,
     size.columns,
     size.rows,
-    s.background,
   );
   const chars = glyphs(s.charset, s.custom);
   const cells = [];
@@ -31,5 +33,5 @@ export function generate(doc: StudioDocument): Grid | null {
         "#" + [r, g, b].map((v) => v.toString(16).padStart(2, "0")).join(""),
     });
   }
-  return { ...size, cells, revision: doc.revision };
+  return { ...size, cells, histogram, revision: doc.revision };
 }

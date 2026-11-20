@@ -1,5 +1,10 @@
+import { markRaw } from "vue";
 import type { Asset } from "../../../shared/document";
-export async function decodeImage(url: string, name: string): Promise<Asset> {
+export async function decodeImage(
+  url: string,
+  name: string,
+  bytes: Uint8Array | null,
+): Promise<Asset> {
   const image = new Image();
   image.src = url;
   await image.decode();
@@ -20,6 +25,7 @@ export async function decodeImage(url: string, name: string): Promise<Asset> {
     url,
     width: image.naturalWidth,
     height: image.naturalHeight,
-    image,
+    image: markRaw(image),
+    bytes,
   };
 }

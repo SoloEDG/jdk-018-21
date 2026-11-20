@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { Code2, Scan, Minus, Plus } from "lucide-vue-next";
+import { Code2, Scan, Minus, Plus, Images, BarChart3 } from "lucide-vue-next";
 import { usePreview } from "../model/usePreview";
 import { gridRows } from "../lib/rows";
 import ArtCanvas from "./ArtCanvas.vue";
+import { CompareView, Histogram } from "../../color";
 const p = usePreview();
 const text = computed(() =>
   p.doc.grid ? gridRows(p.doc.grid).join("\n") : "",
@@ -22,7 +23,19 @@ const text = computed(() =>
           :class="{ active: p.mode.value === 'text' }"
           @click="p.mode.value = 'text'"
         >
-          <Code2 :size="14" /> 纯文本
+          <Code2 :size="14" /> 纯文本</button
+        ><button
+          :class="{ active: p.mode.value === 'compare' }"
+          data-testid="tab-compare"
+          @click="p.mode.value = 'compare'"
+        >
+          <Images :size="14" /> 原图比较</button
+        ><button
+          :class="{ active: p.mode.value === 'histogram' }"
+          data-testid="tab-histogram"
+          @click="p.mode.value = 'histogram'"
+        >
+          <BarChart3 :size="14" /> 亮度分布
         </button>
       </div>
       <label class="color-toggle"
@@ -43,13 +56,24 @@ const text = computed(() =>
           :zoom="p.zoom.value"
         />
         <pre
-          v-else-if="p.doc.grid"
+          v-else-if="p.doc.grid && p.mode.value === 'text'"
           data-testid="text-preview"
           :style="{
             fontSize: (14 * p.zoom.value) / 100 + 'px',
             lineHeight: (16 * p.zoom.value) / 100 + 'px',
           }"
-          >{{ text }}</pre>
+          >{{ text }}</pre
+        >
+        <CompareView
+          v-else-if="p.mode.value === 'compare'"
+          :asset="p.doc.asset"
+          :interpreted="p.doc.interpreted"
+          :interp="p.doc.interpretation"
+        />
+        <Histogram
+          v-else-if="p.mode.value === 'histogram'"
+          :histogram="p.doc.grid?.histogram ?? null"
+        />
         <span v-else>正在准备字符画…</span>
       </div>
       <div class="stage-corner">

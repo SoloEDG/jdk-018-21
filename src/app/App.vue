@@ -2,6 +2,7 @@
 import { Asterisk, LockKeyhole, ArrowUpRight } from "lucide-vue-next";
 import { useWorkspace } from "./useWorkspace";
 import { SourcePanel } from "../features/source";
+import { ColorPanel } from "../features/color";
 import { CropPanel } from "../features/crop";
 import { MappingPanel } from "../features/mapping";
 import { PreviewPanel } from "../features/preview";
@@ -33,7 +34,7 @@ const w = useWorkspace();
       </div>
     </div>
     <div class="editor">
-      <aside><SourcePanel /><CropPanel /><MappingPanel /></aside>
+      <aside><SourcePanel /><ColorPanel /><CropPanel /><MappingPanel /></aside>
       <div class="result"><PreviewPanel /><ExportPanel /></div>
     </div>
     <footer>

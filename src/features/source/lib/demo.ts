@@ -39,5 +39,21 @@ export function demoImage(): string {
     g.fill();
     g.fillRect(x - 2, 660, 4, 35);
   }
+  // 半透明薄雾：用于演示透明像素与底色的合成
+  g.fillStyle = "rgba(226, 232, 240, 0.28)";
+  g.fillRect(0, 300, 960, 46);
+  g.fillStyle = "rgba(226, 232, 240, 0.16)";
+  g.fillRect(0, 360, 960, 26);
+  // 完全透明的开孔与柔边：演示 alpha 边缘在黑/白底色上的不同合成结果
+  g.globalCompositeOperation = "destination-out";
+  const hole = g.createRadialGradient(130, 120, 8, 130, 120, 78);
+  hole.addColorStop(0, "rgba(0,0,0,1)");
+  hole.addColorStop(0.7, "rgba(0,0,0,0.9)");
+  hole.addColorStop(1, "rgba(0,0,0,0)");
+  g.fillStyle = hole;
+  g.beginPath();
+  g.arc(130, 120, 78, 0, Math.PI * 2);
+  g.fill();
+  g.globalCompositeOperation = "source-over";
   return c.toDataURL("image/png");
 }

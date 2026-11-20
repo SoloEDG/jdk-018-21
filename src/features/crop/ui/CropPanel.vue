@@ -8,7 +8,7 @@ const selection = computed(() => (c.start.value ? c.draft.value : c.doc.crop));
 </script>
 <template>
   <section class="panel">
-    <div class="section-title"><span>02 / CROP</span><Crop :size="15" /></div>
+    <div class="section-title"><span>03 / CROP</span><Crop :size="15" /></div>
     <div
       v-if="c.doc.asset"
       class="crop-interaction"
